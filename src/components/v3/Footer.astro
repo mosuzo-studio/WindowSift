@@ -1,0 +1,83 @@
+---
+import { localizedPagePath } from '~/i18n/utils';
+import type { Lang } from '~/i18n/utils';
+import { getV3Copy } from './copy';
+import { identity } from '~/data/identity';
+import { content } from '~/data/content';
+
+export interface Props {
+  lang: Lang;
+  homeRefresh?: boolean;
+}
+
+const { lang } = Astro.props;
+const homeRefresh = lang === 'en' || lang === 'zh-cn';
+const zh = lang === 'zh-cn';
+const c = getV3Copy(lang);
+const blurb = content[lang].summary;
+const l = (path: string, hash?: string) => `${localizedPagePath(lang, path)}${hash ? `#${hash}` : ''}`;
+const cols = homeRefresh
+  ? [
+      {
+        title: zh ? '产品' : 'Product',
+        links: [
+          { text: c.nav.features, path: '/', hash: 'features' },
+          {
+            text: identity.released
+              ? zh
+                ? '下载 Windows 版'
+                : 'Download for Windows'
+              : zh
+                ? '发布状态'
+                : 'Release status',
+            path: '/download',
+          },
+        ],
+      },
+      {
+        title: zh ? '支持' : 'Support',
+        links: [
+          { text: zh ? '使用帮助' : 'Help', path: '/faq' },
+          { text: zh ? '快速开始' : 'Quick start', path: '/guide' },
+          { text: zh ? '快捷键' : 'Shortcuts', path: '/guide/shortcuts' },
+          { text: zh ? '问题排查' : 'Troubleshooting', path: '/guide/troubleshooting' },
+          { text: c.nav.changelog, path: '/changelog' },
+        ],
+      },
+      {
+        title: zh ? '工作室' : 'Studio',
+        links: [
+          { text: c.nav.about, path: '/about' },
+          { text: zh ? '联系与反馈' : 'Contact and feedback', path: '/contact' },
+        ],
+      },
+    ]
+  : c.footer.cols;
+---
+
+<footer class="v3-footer">
+  <div class="v3-wrap">
+    <div class="v3-footer-cols">
+      <div>
+        <h4>{identity.name}</h4>
+        <p class="v3-foot-note" style="margin:0;max-width:280px">{blurb}</p>
+      </div>
+      {
+        cols.map((col) => (
+          <div>
+            <h4>{col.title}</h4>
+            {col.links.map((link) => (
+              <a href={l(link.path, link.hash)}>{link.text}</a>
+            ))}
+          </div>
+        ))
+      }
+    </div>
+
+    <div class="v3-footer-base">
+      <span dir="ltr">{homeRefresh ? '© 2026 Mosuzo Studio' : c.footer.rights}</span>
+      {c.footer.legal.map((link) => <a href={l(link.path)}>{link.text}</a>)}
+      <span class="v3-sp">{homeRefresh ? <span>Windows · Mosuzo Studio</span> : c.footer.system}</span>
+    </div>
+  </div>
+</footer>

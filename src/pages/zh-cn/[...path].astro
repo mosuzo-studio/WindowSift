@@ -1,0 +1,21 @@
+---
+import SitePage from '~/components/SitePage.astro';
+export function getStaticPaths() {
+  return [
+    '',
+    'download',
+    'faq',
+    'guide',
+    'guide/shortcuts',
+    'guide/troubleshooting',
+    'about',
+    'contact',
+    'changelog',
+    'privacy',
+    'terms',
+  ].map((path) => ({ params: { path: path || undefined }, props: { page: path || 'home' } }));
+}
+const { page } = Astro.props;
+---
+
+<SitePage lang="zh-cn" page={page} />

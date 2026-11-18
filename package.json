@@ -1,0 +1,27 @@
+{
+  "name": "@mosuzo-studio/windowsift-site",
+  "version": "1.0.0",
+  "description": "WindowSift official bilingual website",
+  "type": "module",
+  "private": true,
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "verify": "node tools/verify-site.mjs"
+  },
+  "dependencies": {
+    "astro": "^6.4.2",
+    "@astrojs/sitemap": "^3.7.3"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.9",
+    "typescript": "^5.9.3",
+    "prettier": "^3.8.3",
+    "prettier-plugin-astro": "^0.14.1"
+  }
+}

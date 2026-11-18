@@ -1,0 +1,298 @@
+---
+import { identity } from '~/data/identity';
+import type { Lang } from '~/i18n/utils';
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const zh = lang === 'zh-cn';
+---
+
+{
+  identity.slug === 'windowsift' ? (
+    <figure class="inspector-preview" data-inspector>
+      <div class="preview-label">
+        <span class="live-dot" /> {zh ? '窗口线索工作台' : 'THE WINDOW WORKSPACE'}
+        <span class="preview-number">01 — 03</span>
+      </div>
+      <div class="inspector-body">
+        <div class="inspector-sidebar">
+          <div class="crosshair" aria-hidden="true">
+            ⌖
+          </div>
+          <p>{zh ? '选择目标' : 'PICK A TARGET'}</p>
+          <div role="group" aria-label={zh ? '示意工作区' : 'Illustrative workspace'} class="inspector-tabs">
+            <button type="button" data-inspect-tab="source" aria-pressed="true">
+              {zh ? '窗口来源' : 'Window source'}
+              <span>↗</span>
+            </button>
+            <button type="button" data-inspect-tab="tree" aria-pressed="false">
+              {zh ? '窗口树' : 'Window tree'}
+              <span>↗</span>
+            </button>
+            <button type="button" data-inspect-tab="details" aria-pressed="false">
+              {zh ? '技术详情' : 'Technical details'}
+              <span>↗</span>
+            </button>
+          </div>
+          <small>WINDOWS / EXAMPLE</small>
+        </div>
+        <div class="inspector-content">
+          <div data-inspect-panel="source">
+            <span class="small-label">{zh ? '示例目标窗口' : 'EXAMPLE TARGET'}</span>
+            <h3>Notes — Notepad</h3>
+            <p class="process-name">
+              <span>▤</span> notepad.exe
+            </p>
+            <dl class="properties">
+              <>
+                <div>
+                  <>
+                    <dt>{zh ? '所属进程' : 'Process'}</dt>
+                    <dd>Notepad</dd>
+                  </>
+                </div>
+                <div>
+                  <>
+                    <dt>{zh ? '程序路径' : 'Executable'}</dt>
+                    <dd>C:\Windows\…\notepad.exe</dd>
+                  </>
+                </div>
+                <div>
+                  <>
+                    <dt>{zh ? '窗口状态' : 'State'}</dt>
+                    <dd>
+                      <i />
+                      {zh ? '可见' : 'Visible'}
+                    </dd>
+                  </>
+                </div>
+              </>
+            </dl>
+            <div class="inspector-note">{zh ? '从窗口，追到程序。' : 'From the window. Back to the app.'}</div>
+          </div>
+          <div data-inspect-panel="tree" hidden>
+            <span class="small-label">{zh ? '示例窗口树' : 'EXAMPLE WINDOW TREE'}</span>
+            <h3>{zh ? '找到它的上下文' : 'Find its context'}</h3>
+            <label class="search-label">
+              {zh ? '搜索示例窗口' : 'Search example windows'}
+              <input type="search" data-tree-search placeholder={zh ? '标题或程序名…' : 'Title or program…'} />
+            </label>
+            <div class="tree-list">
+              <>
+                <p data-tree-row>▾ Desktop</p>
+                <p data-tree-row>　└ Notes — Notepad</p>
+                <p data-tree-row>　└ Explorer</p>
+              </>
+            </div>
+            <p data-tree-empty hidden>
+              {zh ? '没有匹配的示例窗口' : 'No matching example windows'}
+            </p>
+          </div>
+          <div data-inspect-panel="details" hidden>
+            <span class="small-label">{zh ? '示例属性' : 'EXAMPLE PROPERTIES'}</span>
+            <h3>{zh ? '细节，有据可查' : 'Details, in plain sight.'}</h3>
+            <dl class="properties">
+              <>
+                <div>
+                  <>
+                    <dt>HWND</dt>
+                    <dd>0x000A1234</dd>
+                  </>
+                </div>
+                <div>
+                  <>
+                    <dt>{zh ? '类名' : 'Class'}</dt>
+                    <dd>Notepad</dd>
+                  </>
+                </div>
+                <div>
+                  <>
+                    <dt>{zh ? '矩形' : 'Bounds'}</dt>
+                    <dd>120, 80 · 960 × 640</dd>
+                  </>
+                </div>
+                <div>
+                  <>
+                    <dt>{zh ? '单位' : 'Units'}</dt>
+                    <dd>px / DIP</dd>
+                  </>
+                </div>
+              </>
+            </dl>
+          </div>
+        </div>
+      </div>
+      <figcaption>
+        {zh
+          ? '交互示意 · 示例数据，非程序截图。试试切换左侧工作区。'
+          : 'Interactive illustration · Example data, not an app screenshot. Try the workspace tabs.'}
+      </figcaption>
+    </figure>
+  ) : identity.slug === 'imageperch' ? (
+    <figure class="image-preview" data-viewer>
+      <div class="viewer-top">
+        <>
+          <span>
+            ImagePerch <small>/ THE IMAGE WORKSPACE</small>
+          </span>
+          <div role="group" aria-label={zh ? '查看截图主题' : 'Screenshot theme'}>
+            <>
+              <button type="button" data-viewer-theme="dark" aria-pressed="true">
+                {zh ? '深色' : 'Dark'}
+              </button>
+              <button type="button" data-viewer-theme="light" aria-pressed="false">
+                {zh ? '浅色' : 'Light'}
+              </button>
+            </>
+          </div>
+        </>
+      </div>
+      <a
+        class="viewer-shot"
+        href="/media/viewer-dark.png"
+        data-viewer-link
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={zh ? '打开完整原始截图（新标签页）' : 'Open full original screenshot (new tab)'}
+      >
+        <img
+          src="/media/viewer-dark.png"
+          data-viewer-image
+          width="2440"
+          height="1600"
+          alt={
+            zh
+              ? '早期 Image Viewer 深色界面真实截图：适应窗口、原始大小、缩放、裁切与导出工具'
+              : 'Real earlier Image Viewer dark UI: fit, actual size, zoom, trim and export controls'
+          }
+          fetchpriority="high"
+        />
+        <span class="image-expand">↗ {zh ? '查看原图' : 'View original'}</span>
+      </a>
+      <div class="viewer-meta">
+        <>
+          <span>FIT / 100% / TRIM</span>
+          <span>PNG · JPG · WEBP</span>
+        </>
+      </div>
+      <figcaption>
+        {zh
+          ? '早期共用 Image Viewer 实现实拍 · 中文界面 · 非新命名版本实拍。'
+          : 'Real capture of the earlier shared Image Viewer · Chinese UI · Not the newly named build.'}
+      </figcaption>
+    </figure>
+  ) : (
+    <figure class="keys-preview" data-motion-demo>
+      <div class="preview-label">
+        <span class="live-dot" /> {zh ? '真实产品演示' : 'ACTUAL PRODUCT SHOWCASE'}
+        <span>v0.1.0</span>
+      </div>
+      <div class="motion-stage">
+        <>
+          <img
+            src="/media/showcase-integrated.gif"
+            data-motion-image
+            width="874"
+            height="491"
+            alt={
+              zh
+                ? 'KeySplera 原始演示：按键键帽、鼠标按钮与点击涟漪'
+                : 'Original KeySplera showcase: keycaps, mouse button highlights and click ripples'
+            }
+            fetchpriority="high"
+          />
+          <canvas data-motion-still hidden aria-hidden="true" />
+        </>
+      </div>
+      <figcaption>
+        <>
+          <span>
+            {zh ? '来自 KeySplera 仓库的原始演示动图' : 'Original showcase GIF from the KeySplera repository'}
+          </span>
+          <button
+            type="button"
+            data-motion-toggle
+            data-pause-label={zh ? '暂停动图' : 'Pause animation'}
+            data-play-label={zh ? '播放动图' : 'Play animation'}
+          >
+            {zh ? '暂停动图' : 'Pause animation'}
+          </button>
+        </>
+      </figcaption>
+    </figure>
+  )
+}
+<script>
+  function initPreviews() {
+    document.querySelectorAll<HTMLElement>('[data-inspector]').forEach((root) => {
+      if (root.dataset.wired) return;
+      root.dataset.wired = '1';
+      root.querySelectorAll<HTMLButtonElement>('[data-inspect-tab]').forEach((button) =>
+        button.addEventListener('click', () => {
+          root
+            .querySelectorAll('[data-inspect-tab]')
+            .forEach((tab) => tab.setAttribute('aria-pressed', String(tab === button)));
+          root
+            .querySelectorAll<HTMLElement>('[data-inspect-panel]')
+            .forEach((panel) => (panel.hidden = panel.dataset.inspectPanel !== button.dataset.inspectTab));
+        })
+      );
+      root.querySelector<HTMLInputElement>('[data-tree-search]')?.addEventListener('input', (event) => {
+        const query = (event.target as HTMLInputElement).value.toLowerCase().trim();
+        let count = 0;
+        root.querySelectorAll<HTMLElement>('[data-tree-row]').forEach((row) => {
+          row.hidden = !row.textContent?.toLowerCase().includes(query);
+          if (!row.hidden) count++;
+        });
+        const empty = root.querySelector<HTMLElement>('[data-tree-empty]');
+        if (empty) empty.hidden = count > 0;
+      });
+    });
+    document.querySelectorAll<HTMLElement>('[data-viewer]').forEach((root) => {
+      if (root.dataset.wired) return;
+      root.dataset.wired = '1';
+      root.querySelectorAll<HTMLButtonElement>('[data-viewer-theme]').forEach((button) =>
+        button.addEventListener('click', () => {
+          const theme = button.dataset.viewerTheme!;
+          const img = root.querySelector<HTMLImageElement>('[data-viewer-image]')!;
+          img.src = `/media/viewer-${theme}.png`;
+          img.alt =
+            document.documentElement.lang === 'zh-cn'
+              ? `早期 Image Viewer ${theme === 'dark' ? '深色' : '浅色'}界面真实截图`
+              : `Real earlier Image Viewer ${theme} UI screenshot`;
+          root.querySelector<HTMLAnchorElement>('[data-viewer-link]')!.href = img.src;
+          root
+            .querySelectorAll('[data-viewer-theme]')
+            .forEach((tab) => tab.setAttribute('aria-pressed', String(tab === button)));
+        })
+      );
+    });
+    document.querySelectorAll<HTMLElement>('[data-motion-demo]').forEach((root) => {
+      if (root.dataset.wired) return;
+      root.dataset.wired = '1';
+      const img = root.querySelector<HTMLImageElement>('[data-motion-image]')!;
+      const still = root.querySelector<HTMLCanvasElement>('[data-motion-still]')!;
+      const button = root.querySelector<HTMLButtonElement>('[data-motion-toggle]')!;
+      const setPaused = (paused: boolean) => {
+        if (paused) {
+          if (!img.complete || !img.naturalWidth) return;
+          still.width = img.naturalWidth;
+          still.height = img.naturalHeight;
+          still.getContext('2d')?.drawImage(img, 0, 0);
+        }
+        img.hidden = paused;
+        still.hidden = !paused;
+        button.textContent = paused ? button.dataset.playLabel! : button.dataset.pauseLabel!;
+        button.setAttribute('aria-pressed', String(paused));
+      };
+      button.addEventListener('click', () => setPaused(!img.hidden));
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        if (img.complete) setPaused(true);
+        else img.addEventListener('load', () => setPaused(true), { once: true });
+      }
+    });
+  }
+  initPreviews();
+  document.addEventListener('astro:page-load', initPreviews);
+</script>

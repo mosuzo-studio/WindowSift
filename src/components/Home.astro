@@ -1,0 +1,281 @@
+---
+import ProductPreview from './ProductPreview.astro';
+import { identity } from '~/data/identity';
+import { content } from '~/data/content';
+import { localizedPagePath, type Lang } from '~/i18n/utils';
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const zh = lang === 'zh-cn';
+const c = content[lang];
+const l = (p: string) => localizedPagePath(lang, p);
+---
+
+<section class="product-hero">
+  <div class="v3-wrap hero-grid">
+    <div class="hero-copy">
+      <p class="product-kicker"><span></span>{c.kicker}</p>
+      <h1>{c.title[0]}<em>{c.title[1]}</em></h1>
+      <p class="product-summary">{c.summary}</p>
+      <div class="product-actions">
+        <a class="action-primary" href={l('/download')}
+          >{
+            identity.released
+              ? zh
+                ? '下载 Windows 版'
+                : 'Download for Windows'
+              : zh
+                ? '查看发布状态'
+                : 'View release status'
+          }<span aria-hidden="true">↓</span></a
+        ><a class="action-text" href="#features"
+          >{zh ? '探索功能' : 'Explore the details'}<span aria-hidden="true">↗</span></a
+        >
+      </div>
+      <p class="platform-note">
+        {
+          identity.released
+            ? 'v0.1.0 · Windows 10 / 11 · x64'
+            : zh
+              ? 'Windows · 独立公开版本准备中'
+              : 'Windows · Standalone public release pending'
+        }
+      </p>
+    </div>
+    <ProductPreview lang={lang} />
+  </div>
+</section>
+<div class="product-ribbon">
+  <div class="v3-wrap">
+    <span>MOSUZO STUDIO <span aria-hidden="true">/</span> {identity.name}</span><p>{c.category}</p><span
+      class="ribbon-end">{zh ? '为专注的工作而造' : 'Made for focused work'} ↗</span
+    >
+  </div>
+</div>
+<section class="product-features v3-wrap" id="features">
+  <div class="section-intro">
+    <p class="product-kicker">{zh ? '顺着工作，展开功能' : 'A WORKFLOW, THOUGHT THROUGH'}</p><div>
+      <h2>{c.intro[0]}<br />{c.intro[1]}</h2><p>{c.introText}</p>
+    </div>
+  </div>
+  <div class="feature-rows">
+    {
+      c.features.map((f, i) => (
+        <article class="feature-row">
+          <>
+            <span class="feature-index">{f[0]}</span>
+            <div>
+              <>
+                <h3>{f[1]}</h3>
+                <p>{f[2]}</p>
+              </>
+            </div>
+            <div class="feature-tags">
+              {f[3].split(' · ').map((tag) => (
+                <span>{tag}</span>
+              ))}
+              <span class="feature-arrow" aria-hidden="true">
+                {['⌖', '⊞', '◉', '↗'][i]}
+              </span>
+            </div>
+          </>
+        </article>
+      ))
+    }
+  </div>
+</section>
+{
+  identity.slug === 'keysplera' && (
+    <section class="playground-section">
+      <div class="v3-wrap playground-grid">
+        <>
+          <div>
+            <>
+              <p class="product-kicker">{zh ? '试试反馈的感觉' : 'A LITTLE HANDS-ON'}</p>
+              <h2>{zh ? '按一下，便明白。' : 'One press says it all.'}</h2>
+              <p>
+                {zh
+                  ? '网页交互示意。聚焦输入框后试试按键，或点击彩色按钮。'
+                  : 'A browser illustration. Focus the field and press a key, or try a colored button.'}
+              </p>
+            </>
+          </div>
+          <div class="key-playground" data-playground>
+            <>
+              <label for="demo-input">{zh ? '在此试按键' : 'Try a key here'}</label>
+              <input
+                id="demo-input"
+                type="text"
+                placeholder={zh ? '点击这里，再按方向键…' : 'Click here, then press an arrow key…'}
+                autocomplete="off"
+                spellcheck="false"
+                aria-describedby="playground-caption"
+              />
+              <div class="key-output" aria-live="polite" data-key-output>
+                ↑
+              </div>
+              <div class="mouse-colors">
+                {['blue', 'red', 'amber', 'purple'].map((color, i) => (
+                  <button
+                    type="button"
+                    data-demo-color={color}
+                    aria-label={
+                      (zh
+                        ? ['左键，蓝色', '右键，红色', '中键，琥珀色', '侧键，紫色']
+                        : ['Left button, blue', 'Right button, red', 'Middle button, amber', 'Side button, purple'])[i]
+                    }
+                  >
+                    {(zh ? ['左键', '右键', '中键', '侧键'] : ['Left', 'Right', 'Middle', 'Side'])[i]}
+                  </button>
+                ))}
+              </div>
+              <small id="playground-caption">
+                {zh
+                  ? '仅在本区域内响应 · 不读取全局输入 · 非软件运行画面'
+                  : 'Responds inside this demo only · No global input capture · Not the app'}
+              </small>
+            </>
+          </div>
+        </>
+      </div>
+    </section>
+  )
+}
+<section class="workflow-section">
+  <div class="v3-wrap">
+    <p class="product-kicker">{zh ? '开始使用' : 'GET INTO YOUR FLOW'}</p><div class="workflow-heading">
+      <h2>{zh ? '从这里，顺手开始。' : 'A clear place to start.'}</h2><a class="action-text" href={l('/guide')}
+        >{zh ? '阅读使用指南' : 'Read the quick start'} ↗</a
+      >
+    </div><ol class="workflow-steps">
+      {
+        c.steps.map((s, i) => (
+          <li>
+            <>
+              <span>0{i + 1}</span>
+              <h3>{s[0]}</h3>
+              <p>{s[1]}</p>
+            </>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+{
+  identity.slug === 'keysplera' && (
+    <section class="v3-wrap showcase-section">
+      <>
+        <div class="workflow-heading">
+          <div>
+            <>
+              <p class="product-kicker">{zh ? '看清每种反馈' : 'SEE THE FEEDBACK'}</p>
+              <h2>{zh ? '按键与点击，各自清晰。' : 'Keys and clicks, in focus.'}</h2>
+            </>
+          </div>
+        </div>
+        <div class="showcase-grid">
+          {[
+            { file: 'showcase-keyboard.gif', title: zh ? '键帽反馈' : 'Keycap feedback' },
+            { file: 'showcase-mouse.gif', title: zh ? '鼠标与涟漪' : 'Mouse and ripples' },
+          ].map((item) => (
+            <figure data-motion-demo>
+              <div class="motion-stage">
+                <img
+                  src={'/media/' + item.file}
+                  width="874"
+                  height={item.file.includes('keyboard') ? '249' : '491'}
+                  alt={item.title}
+                  data-motion-image
+                  loading="lazy"
+                />
+                <canvas data-motion-still hidden aria-hidden="true" />
+              </div>
+              <figcaption>
+                <span>{item.title}</span>
+                <button
+                  type="button"
+                  data-motion-toggle
+                  data-pause-label={zh ? '暂停' : 'Pause'}
+                  data-play-label={zh ? '播放' : 'Play'}
+                >
+                  {zh ? '暂停' : 'Pause'}
+                </button>
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+      </>
+    </section>
+  )
+}
+<section class="v3-wrap faq-section">
+  <div>
+    <p class="product-kicker">{zh ? '先解答几个问题' : 'GOOD TO KNOW'}</p><h2>
+      {zh ? '开始之前，心里有数。' : 'A few things to know.'}
+    </h2><a class="action-text" href={l('/faq')}>{zh ? '查看全部帮助' : 'Visit the help center'} ↗</a>
+  </div><div>
+    {
+      c.faq.slice(0, 3).map((f) => (
+        <details>
+          <>
+            <summary>
+              {f[0]}
+              <span aria-hidden="true">+</span>
+            </summary>
+            <p>{f[1]}</p>
+          </>
+        </details>
+      ))
+    }
+  </div>
+</section>
+<section class="closing-section">
+  <div class="v3-wrap">
+    <p class="product-kicker">{identity.name.toUpperCase()} / MOSUZO STUDIO</p><h2>
+      {
+        identity.released
+          ? zh
+            ? '让下一次演示，更容易跟上。'
+            : 'Make the next demo easier to follow.'
+          : zh
+            ? '为下一段专注，准备一件顺手工具。'
+            : 'A focused tool for what comes next.'
+      }
+    </h2><a class="action-primary" href={l('/download')}
+      >{
+        identity.released ? (zh ? '下载 KeySplera' : 'Get KeySplera') : zh ? '查看发布信息' : 'See release information'
+      }<span aria-hidden="true">↗</span></a
+    >
+  </div>
+</section>
+<script>
+  function initPlayground() {
+    const root = document.querySelector<HTMLElement>('[data-playground]');
+    if (!root || root.dataset.wired) return;
+    root.dataset.wired = '1';
+    const output = root.querySelector<HTMLElement>('[data-key-output]')!;
+    root.querySelector('input')?.addEventListener('keydown', (event) => {
+      if (event.key === 'Tab') return;
+      event.preventDefault();
+      output.textContent = [
+        event.ctrlKey ? 'Ctrl' : '',
+        event.altKey ? 'Alt' : '',
+        event.shiftKey && event.key !== 'Shift' ? 'Shift' : '',
+        event.key === ' ' ? 'Space' : event.key,
+      ]
+        .filter(Boolean)
+        .join(' + ');
+      output.dataset.color = 'blue';
+    });
+    root.querySelectorAll<HTMLButtonElement>('[data-demo-color]').forEach((button) =>
+      button.addEventListener('click', () => {
+        output.dataset.color = button.dataset.demoColor;
+        output.textContent = button.textContent;
+      })
+    );
+  }
+  initPlayground();
+  document.addEventListener('astro:page-load', initPlayground);
+</script>

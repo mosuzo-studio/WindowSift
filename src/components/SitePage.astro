@@ -1,0 +1,387 @@
+---
+import Layout from '~/layouts/Layout.astro';
+import Home from './Home.astro';
+import { content } from '~/data/content';
+import { identity } from '~/data/identity';
+import { localizedPagePath, type Lang } from '~/i18n/utils';
+interface Props {
+  lang: Lang;
+  page: string;
+}
+const { lang, page } = Astro.props;
+const zh = lang === 'zh-cn';
+const c = content[lang];
+const l = (p: string) => localizedPagePath(lang, p);
+const names: Record<string, string> = {
+  home: c.category,
+  download: zh ? '下载与发布' : 'Downloads and releases',
+  faq: zh ? '使用帮助' : 'Help center',
+  guide: zh ? '快速开始' : 'Quick start',
+  'guide/shortcuts': zh ? '快捷键与操作' : 'Shortcuts and controls',
+  'guide/troubleshooting': zh ? '问题排查' : 'Troubleshooting',
+  about: zh ? '关于工作室' : 'About the studio',
+  contact: zh ? '联系与反馈' : 'Contact and feedback',
+  changelog: zh ? '更新日志' : 'Changelog',
+  privacy: zh ? '网站隐私说明' : 'Website privacy',
+  terms: zh ? '使用条款' : 'Terms of use',
+  '404': zh ? '页面未找到' : 'Page not found',
+};
+const title = names[page] ?? names.home;
+const releaseLabel = identity.released
+  ? zh
+    ? 'v0.1.0 · 已发布'
+    : 'v0.1.0 · Available'
+  : zh
+    ? '独立公开版本准备中'
+    : 'Standalone public release pending';
+---
+
+<Layout lang={lang} title={title} noindex={page === '404'}>
+  {
+    page === 'home' ? (
+      <Home lang={lang} />
+    ) : (
+      <>
+        <section class="page-heading v3-wrap">
+          <>
+            <p class="product-kicker">{identity.name.toUpperCase()} / MOSUZO STUDIO</p>
+            <h1>{title}</h1>
+            <p>{page === 'download' ? releaseLabel : c.category}</p>
+          </>
+        </section>
+        <div class="v3-wrap inner-content">
+          {page === 'download' && (
+            <>
+              <div class="download-layout">
+                <section class="download-card">
+                  <div class="download-brand">
+                    <img src="/favicon.svg" width="56" height="56" alt="" />
+                    <div>
+                      <h2>{identity.name}</h2>
+                      <p>{releaseLabel}</p>
+                    </div>
+                  </div>
+                  {identity.released ? (
+                    <>
+                      <p>
+                        {zh
+                          ? '适用于 Windows 10 / 11（64 位）。安装包由官方 GitHub Release 提供。'
+                          : 'For Windows 10 / 11 (64-bit). The installer is hosted on the official GitHub Release.'}
+                      </p>
+                      <a class="action-primary" href={identity.download!}>
+                        {zh ? '下载 Windows x64 安装包' : 'Download Windows x64 installer'} ↓
+                      </a>
+                      <p class="file-info">KeySplera_0.1.0_x64-setup.exe · 2.05 MB</p>
+                      <a class="action-text" href={identity.repo + '/releases/tag/v0.1.0'}>
+                        {zh ? '查看发布说明与下载来源' : 'View release notes and download source'} ↗
+                      </a>
+                    </>
+                  ) : (
+                    <>
+                      <p>
+                        {zh
+                          ? '目前尚未核实到独立公开发布包。你可以先了解功能与使用流程，或联系工作室了解发布进度。'
+                          : 'A standalone public release has not been verified yet. Explore the workflow or contact the studio for release information.'}
+                      </p>
+                      <a
+                        class="action-primary"
+                        href={
+                          'mailto:mosuzo.studio@gmail.com?subject=' +
+                          encodeURIComponent(identity.name + ' release inquiry')
+                        }
+                      >
+                        {zh ? '联系工作室' : 'Contact the studio'} ↗
+                      </a>
+                      <a class="action-text" href={l('/guide')}>
+                        {zh ? '先看使用指南' : 'Explore the quick start'} ↗
+                      </a>
+                    </>
+                  )}
+                </section>
+                <aside class="note-panel">
+                  <p class="small-label">{zh ? '使用前了解' : 'BEFORE YOU START'}</p>
+                  <h2>{zh ? '运行与使用说明' : 'Requirements and notes'}</h2>
+                  <ul>
+                    {c.limits.map((item) => (
+                      <li>{item}</li>
+                    ))}
+                  </ul>
+                  <a class="action-text" href={l('/guide/troubleshooting')}>
+                    {zh ? '查看问题排查' : 'Troubleshooting'} ↗
+                  </a>
+                </aside>
+              </div>
+              <section class="article-section">
+                <h2>{zh ? '下载之后' : 'After downloading'}</h2>
+                <ol class="plain-steps">
+                  {c.steps.map((s) => (
+                    <li>
+                      <h3>{s[0]}</h3>
+                      <p>{s[1]}</p>
+                    </li>
+                  ))}
+                </ol>
+              </section>
+            </>
+          )}
+          {page === 'faq' && (
+            <>
+              <div class="help-cards">
+                {[
+                  [
+                    '/guide',
+                    zh ? '快速开始' : 'Quick start',
+                    zh ? '从第一步到完成工作。' : 'From the first step to a useful result.',
+                  ],
+                  [
+                    '/guide/shortcuts',
+                    zh ? '快捷键与操作' : 'Shortcuts and controls',
+                    zh ? '熟悉常用入口。' : 'Find the controls you use most.',
+                  ],
+                  [
+                    '/guide/troubleshooting',
+                    zh ? '问题排查' : 'Troubleshooting',
+                    zh ? '了解边界，解决问题。' : 'Understand limits and resolve issues.',
+                  ],
+                ].map((item) => (
+                  <a href={l(item[0])}>
+                    <span>↗</span>
+                    <h2>{item[1]}</h2>
+                    <p>{item[2]}</p>
+                  </a>
+                ))}
+              </div>
+              <section class="all-faq">
+                {c.faq.map((f) => (
+                  <details>
+                    <summary>
+                      {f[0]}
+                      <span aria-hidden="true">+</span>
+                    </summary>
+                    <p>{f[1]}</p>
+                  </details>
+                ))}
+              </section>
+              <p class="support-line">
+                {zh ? '还有问题？' : 'Still need a hand?'}{' '}
+                <a href={l('/contact')}>{zh ? '联系 Mosuzo Studio' : 'Contact Mosuzo Studio'} ↗</a>
+              </p>
+            </>
+          )}
+          {page === 'guide' && (
+            <div class="article-layout">
+              <aside class="article-nav">
+                <a aria-current="page" href={l('/guide')}>
+                  {zh ? '快速开始' : 'Quick start'}
+                </a>
+                <a href={l('/guide/shortcuts')}>{zh ? '快捷键与操作' : 'Shortcuts and controls'}</a>
+                <a href={l('/guide/troubleshooting')}>{zh ? '问题排查' : 'Troubleshooting'}</a>
+              </aside>
+              <article class="article-body">
+                <h2>{zh ? '按你的节奏开始。' : 'Get started at your pace.'}</h2>
+                <p>{c.summary}</p>
+                <ol class="plain-steps">
+                  {c.steps.map((s) => (
+                    <li>
+                      <h3>{s[0]}</h3>
+                      <p>{s[1]}</p>
+                    </li>
+                  ))}
+                </ol>
+                <div class="inline-note">
+                  {zh ? '当前发布状态：' : 'Release status: '}
+                  {releaseLabel} · <a href={l('/download')}>{zh ? '查看详情' : 'See details'} ↗</a>
+                </div>
+                <h2>{zh ? '继续了解' : 'Keep exploring'}</h2>
+                <p>
+                  <a href={l('/guide/shortcuts')}>{zh ? '快捷键与常用操作' : 'Shortcuts and everyday controls'} ↗</a>
+                </p>
+              </article>
+            </div>
+          )}
+          {page === 'guide/shortcuts' && (
+            <article class="article-body narrow">
+              <p>
+                {zh
+                  ? '以下操作来自已核对的程序入口；未核实的全局快捷键不在此列出。'
+                  : 'These controls are documented in the inspected implementation. Unverified global shortcuts are not listed.'}
+              </p>
+              <dl class="controls-table">
+                {c.shortcuts.map((s) => (
+                  <div>
+                    <dt>{s[0]}</dt>
+                    <dd>{s[1]}</dd>
+                  </div>
+                ))}
+              </dl>
+              <a class="action-text" href={l('/guide')}>
+                ← {zh ? '回到快速开始' : 'Back to quick start'}
+              </a>
+            </article>
+          )}
+          {page === 'guide/troubleshooting' && (
+            <article class="article-body narrow">
+              <h2>{zh ? '先了解这些使用边界。' : 'Start with these known limits.'}</h2>
+              <ul>
+                {c.limits.map((item) => (
+                  <li>{item}</li>
+                ))}
+              </ul>
+              <h2>{zh ? '反馈时，带上有用的信息。' : 'Make a useful bug report.'}</h2>
+              <p>
+                {zh
+                  ? '请说明软件版本、Windows 版本、复现步骤和预期结果。若与显示位置有关，请补充显示器数量与缩放比例。截图前检查是否包含私密内容。'
+                  : 'Include the app version, Windows version, steps to reproduce, and expected result. For positioning issues, include monitor count and display scaling. Review screenshots for private content before sharing.'}
+              </p>
+              <a class="action-primary" href={l('/contact')}>
+                {zh ? '反馈问题' : 'Report a problem'} ↗
+              </a>
+            </article>
+          )}
+          {page === 'about' && (
+            <article class="article-body narrow">
+              <p class="large-copy">{zh ? '为日常工作，造顺手的工具。' : 'Thoughtful tools for everyday work.'}</p>
+              <p>
+                {zh
+                  ? 'Mosuzo Studio 专注 Windows 桌面工具。每个产品围绕一件具体的事，保留清晰的操作路径，让功能在需要时出现。'
+                  : 'Mosuzo Studio builds focused Windows desktop tools. Each product starts with a concrete task and keeps the path through it clear.'}
+              </p>
+              <h2>{identity.name}</h2>
+              <p>{c.summary}</p>
+              <h2>{zh ? '工作室的其他工具' : 'More from the studio'}</h2>
+              <div class="studio-links">
+                <a href={'https://sniparc.mosuzo.com' + (zh ? '/zh-cn' : '/')}>
+                  SnipArc <span>{zh ? '截图与标注' : 'Capture and annotation'} ↗</span>
+                </a>
+                {identity.slug !== 'keysplera' && (
+                  <a href={'https://github.com/mosuzo-studio/KeySplera'}>
+                    KeySplera <span>{zh ? '键鼠可视化' : 'Keyboard and mouse overlay'} ↗</span>
+                  </a>
+                )}
+              </div>
+              <a class="action-text" href={l('/contact')}>
+                {zh ? '与我们联系' : 'Get in touch'} ↗
+              </a>
+            </article>
+          )}
+          {page === 'contact' && (
+            <article class="article-body narrow">
+              <p class="large-copy">{zh ? '问题、建议，或一个新想法。' : 'A question, a suggestion, or a new idea.'}</p>
+              <p>
+                {zh
+                  ? '告诉我们你正在做什么、遇到了什么，以及希望它怎样工作。'
+                  : 'Tell us what you are working on, what happened, and what you hoped would happen.'}
+              </p>
+              <div class="contact-option">
+                <span>EMAIL</span>
+                <a href={'mailto:mosuzo.studio@gmail.com?subject=' + encodeURIComponent(identity.name + ' feedback')}>
+                  mosuzo.studio@gmail.com ↗
+                </a>
+              </div>
+              {identity.released && (
+                <div class="contact-option">
+                  <span>GITHUB ISSUES</span>
+                  <a href={identity.repo + '/issues'}>{zh ? '提交问题或建议' : 'Report an issue or share an idea'} ↗</a>
+                </div>
+              )}
+              <p>
+                {zh
+                  ? '反馈软件问题时，请附上版本号和复现步骤。无需发送密码、密钥或其他敏感资料。'
+                  : 'For software issues, include the version and reproduction steps. Passwords, keys and other sensitive details are not needed.'}
+              </p>
+            </article>
+          )}
+          {page === 'changelog' && (
+            <article class="article-body narrow">
+              <p class="small-label">{identity.released ? '2026 / 09 / 30' : '2026 / 11 / 18'}</p>
+              <h2>{identity.released ? 'v0.1.0' : zh ? '网站上线准备' : 'Website launch preparation'}</h2>
+              <p>{c.changelog}</p>
+              {identity.released ? (
+                <a class="action-text" href={identity.repo + '/releases/tag/v0.1.0'}>
+                  {zh ? '阅读完整发布说明' : 'Read the full release notes'} ↗
+                </a>
+              ) : (
+                <a class="action-text" href={l('/download')}>
+                  {zh ? '查看发布状态' : 'Check release availability'} ↗
+                </a>
+              )}
+            </article>
+          )}
+          {page === 'privacy' && (
+            <article class="article-body narrow">
+              <p>
+                {zh
+                  ? '更新日期：2026 年 11 月 18 日。此说明仅适用于本网站。'
+                  : 'Updated November 18, 2026. This notice applies to this website.'}
+              </p>
+              <h2>{zh ? '浏览与本地交互' : 'Browsing and local interactions'}</h2>
+              <p>
+                {zh
+                  ? '本网站是静态页面，没有账户系统，也未添加分析追踪脚本、广告或追踪 Cookie。演示中的搜索、主题切换和按键反馈仅在当前页面处理，不发送到工作室服务器。'
+                  : 'This is a static website without accounts. We have not added analytics scripts, advertising or tracking cookies. Demo search, theme switching and key feedback are handled within the page and are not sent to a studio server.'}
+              </p>
+              <h2>{zh ? '托管与外部链接' : 'Hosting and external links'}</h2>
+              <p>
+                {zh
+                  ? '网站使用 GitHub Pages 托管。访问托管服务、GitHub 下载链接或邮件服务时，相应服务提供商可能按自己的隐私政策处理连接与使用信息。'
+                  : 'The website is hosted on GitHub Pages. Hosting, GitHub downloads and email services may process connection and usage information under their own privacy policies.'}
+              </p>
+              <p>
+                <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement">
+                  {zh ? 'GitHub 隐私声明' : 'GitHub Privacy Statement'} ↗
+                </a>
+              </p>
+              <h2>{zh ? '反馈与软件本身' : 'Feedback and the desktop app'}</h2>
+              <p>
+                {zh
+                  ? '通过邮件或 Issues 联系我们时，你选择提供的内容会用于处理反馈。本网站说明不代替桌面软件随附的隐私或许可说明。'
+                  : 'Information you choose to send by email or Issues is used to address your feedback. This website notice does not replace the privacy or license information supplied with the desktop app.'}
+              </p>
+              <a href="mailto:mosuzo.studio@gmail.com">mosuzo.studio@gmail.com</a>
+            </article>
+          )}
+          {page === 'terms' && (
+            <article class="article-body narrow">
+              <p>{zh ? '更新日期：2026 年 11 月 18 日。' : 'Updated November 18, 2026.'}</p>
+              <h2>{zh ? '网站内容与产品状态' : 'Website information and product status'}</h2>
+              <p>
+                {zh
+                  ? '本站用于介绍 ' +
+                    identity.name +
+                    '。功能、界面与可用性可能随版本变化，下载页显示已核实的公开发布状态。明确标注的网页示意不是软件截图。'
+                  : 'This website introduces ' +
+                    identity.name +
+                    '. Features, interfaces and availability may change by version. The download page reflects verified public release availability. Labeled browser illustrations are not software screenshots.'}
+              </p>
+              <h2>{zh ? '软件许可' : 'Software licensing'}</h2>
+              <p>
+                {zh
+                  ? '软件使用、分发与商业用途以下载包及相关发布说明附带的许可为准。本网站不额外授予开源、再分发或商业使用权限。'
+                  : 'Use, redistribution and commercial use are governed by the license supplied with the download and its release documentation. This website does not grant additional open-source, redistribution or commercial-use rights.'}
+              </p>
+              <h2>{zh ? '反馈与更正' : 'Feedback and corrections'}</h2>
+              <p>
+                {zh
+                  ? '如果发现页面与实际版本不一致，请联系工作室，说明页面地址与软件版本。'
+                  : 'If a page differs from the actual build, contact the studio with the page URL and software version.'}
+              </p>
+              <a href={l('/contact')}>{zh ? '联系工作室' : 'Contact the studio'} ↗</a>
+            </article>
+          )}
+          {page === '404' && (
+            <article class="article-body narrow">
+              <p>
+                {zh
+                  ? '这个地址暂时没有内容，可以回到首页继续浏览。'
+                  : 'There is no page at this address. Head back home to keep exploring.'}
+              </p>
+              <a class="action-primary" href={l('/')}>
+                {zh ? '回到首页' : 'Back home'} ↗
+              </a>
+            </article>
+          )}
+        </div>
+      </>
+    )
+  }
+</Layout>
