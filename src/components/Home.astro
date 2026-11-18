@@ -1,5 +1,6 @@
 ---
 import ProductPreview from './ProductPreview.astro';
+import WorksWellWith from './v3/WorksWellWith.astro';
 import { identity } from '~/data/identity';
 import { content } from '~/data/content';
 import { localizedPagePath, type Lang } from '~/i18n/utils';
@@ -85,6 +86,7 @@ const l = (p: string) => localizedPagePath(lang, p);
     }
   </div>
 </section>
+<WorksWellWith lang={lang} current={identity.slug} />
 {
   identity.slug === 'keysplera' && (
     <section class="playground-section">

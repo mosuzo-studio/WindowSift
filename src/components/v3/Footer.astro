@@ -1,6 +1,7 @@
 ---
 import { localizedPagePath } from '~/i18n/utils';
 import type { Lang } from '~/i18n/utils';
+import { studioContactUrl, studioHome, studioProductsUrl } from '~/data/studio';
 import { getV3Copy } from './copy';
 import { identity } from '~/data/identity';
 import { content } from '~/data/content';
@@ -16,7 +17,9 @@ const zh = lang === 'zh-cn';
 const c = getV3Copy(lang);
 const blurb = content[lang].summary;
 const l = (path: string, hash?: string) => `${localizedPagePath(lang, path)}${hash ? `#${hash}` : ''}`;
-const cols = homeRefresh
+type FooterLink = { text: string; path?: string; hash?: string; href?: string };
+type FooterCol = { title: string; links: FooterLink[] };
+const cols: FooterCol[] = homeRefresh
   ? [
       {
         title: zh ? '产品' : 'Product',
@@ -49,6 +52,9 @@ const cols = homeRefresh
         links: [
           { text: c.nav.about, path: '/about' },
           { text: zh ? '联系与反馈' : 'Contact and feedback', path: '/contact' },
+          { text: zh ? '工作室首页' : 'Studio home', href: studioHome(lang) },
+          { text: zh ? '全部产品' : 'All products', href: studioProductsUrl(lang) },
+          { text: zh ? '联系工作室' : 'Contact the studio', href: studioContactUrl(lang) },
         ],
       },
     ]
@@ -67,7 +73,7 @@ const cols = homeRefresh
           <div>
             <h4>{col.title}</h4>
             {col.links.map((link) => (
-              <a href={l(link.path, link.hash)}>{link.text}</a>
+              <a href={link.href ?? l(link.path ?? '/', link.hash)}>{link.text}</a>
             ))}
           </div>
         ))
