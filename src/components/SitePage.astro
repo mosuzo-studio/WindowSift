@@ -29,8 +29,8 @@ const names: Record<string, string> = {
 const title = names[page] ?? names.home;
 const releaseLabel = identity.released
   ? zh
-    ? 'v0.1.0 · 已发布'
-    : 'v0.1.0 · Available'
+    ? `v${identity.version} · 已发布`
+    : `v${identity.version} · Available`
   : zh
     ? '独立公开版本准备中'
     : 'Standalone public release pending';
@@ -65,15 +65,22 @@ const releaseLabel = identity.released
                     <>
                       <p>
                         {zh
-                          ? '适用于 Windows 10 / 11（64 位）。安装包由官方 GitHub Release 提供。'
-                          : 'For Windows 10 / 11 (64-bit). The installer is hosted on the official GitHub Release.'}
+                          ? '适用于 Windows 10 / 11（64 位）。安装包和便携包由官方 GitHub Release 提供。'
+                          : 'For Windows 10 / 11 (64-bit). Installer and portable versions are hosted on the official GitHub Release.'}
                       </p>
                       <a class="action-primary" href={identity.download!}>
                         {zh ? '下载 Windows x64 安装包' : 'Download Windows x64 installer'} ↓
                       </a>
-                      <p class="file-info">KeySplera_0.1.0_x64-setup.exe · 2.05 MB</p>
-                      <a class="action-text" href={identity.repo + '/releases/tag/v0.1.0'}>
-                        {zh ? '查看发布说明与下载来源' : 'View release notes and download source'} ↗
+                      <p class="file-info">{identity.setupFile}</p>
+                      <a class="action-text" href={identity.portable!}>
+                        {zh ? '下载便携包（7z 压缩）' : 'Download portable package (7z)'} ↓
+                      </a>
+                      <p class="file-info">{identity.portableFile}</p>
+                      <a class="action-text" href={identity.checksums!}>
+                        {zh ? 'SHA256 校验文件' : 'SHA256 checksums'} ↗
+                      </a>
+                      <a class="action-text" href={identity.releaseNotes!}>
+                        {zh ? '发布说明与下载来源' : 'Release notes and download source'} ↗
                       </a>
                     </>
                   ) : (

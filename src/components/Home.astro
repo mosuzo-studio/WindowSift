@@ -37,7 +37,7 @@ const l = (p: string) => localizedPagePath(lang, p);
       <p class="platform-note">
         {
           identity.released
-            ? 'v0.1.0 · Windows 10 / 11 · x64'
+            ? `v${identity.version} · Windows 10 / 11 · x64`
             : zh
               ? 'Windows · 独立公开版本准备中'
               : 'Windows · Standalone public release pending'
