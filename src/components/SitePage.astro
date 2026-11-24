@@ -300,6 +300,11 @@ const releaseLabel = identity.released
           )}
           {page === 'changelog' && (
             <article class="article-body narrow">
+              <h2>v8.2.0</h2>
+              <ul>
+                <li>{zh ? '在「更多」菜单中新增「发送反馈」入口。' : 'Send feedback from the More menu.'}</li>
+              </ul>
+
               <p class="small-label">{identity.released ? '2026 / 09 / 30' : '2026 / 11 / 18'}</p>
               <h2>{identity.released ? 'v0.1.0' : zh ? '网站上线准备' : 'Website launch preparation'}</h2>
               <p>{c.changelog}</p>

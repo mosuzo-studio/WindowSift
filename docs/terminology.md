@@ -11,3 +11,5 @@ No verified current screenshot is available. The browser demo MUST say illustrat
 - 04 / DETAILS / 04 / 技术详情: Window properties · px / DIP · Copy properties / 窗口属性 · px / DIP · 复制属性
 
 No invented metrics, testimonials, prices, licensing, minimum system requirements (except KeySplera Release), or universal offline/privacy claims. Public standalone downloads for WindowSift and ImagePerch are pending. Never upload supplied beta executables as part of the website task.
+
+- 发送反馈 / Send feedback (More menu).

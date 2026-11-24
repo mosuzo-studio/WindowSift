@@ -1,4 +1,5 @@
 ---
+import QqGroup from './QqGroup.astro';
 import ProductPreview from './ProductPreview.astro';
 import WorksWellWith from './v3/WorksWellWith.astro';
 import { identity } from '~/data/identity';
@@ -11,6 +12,8 @@ const { lang } = Astro.props;
 const zh = lang === 'zh-cn';
 const c = content[lang];
 const l = (p: string) => localizedPagePath(lang, p);
+const latestReleaseUrl = identity.repo + '/releases/latest';
+const latestReleaseApi = identity.repo.replace('github.com/', 'api.github.com/repos/') + '/releases/latest';
 ---
 
 <section class="product-hero">
@@ -19,30 +22,25 @@ const l = (p: string) => localizedPagePath(lang, p);
       <p class="product-kicker"><span></span>{c.kicker}</p>
       <h1>{c.title[0]}<em>{c.title[1]}</em></h1>
       <p class="product-summary">{c.summary}</p>
-      <div class="product-actions">
-        <a class="action-primary" href={l('/download')}
-          >{
-            identity.released
-              ? zh
-                ? '下载 Windows 版'
-                : 'Download for Windows'
-              : zh
-                ? '查看发布状态'
-                : 'View release status'
-          }<span aria-hidden="true">↓</span></a
-        ><a class="action-text" href="#features"
-          >{zh ? '探索功能' : 'Explore the details'}<span aria-hidden="true">↗</span></a
-        >
+      <div
+        class="product-actions"
+        data-release-api={latestReleaseApi}
+        data-release-repo={identity.repo}
+        data-release-product={identity.name}
+      >
+        <a class="action-primary" href={latestReleaseUrl} data-release-package="setup.exe">
+          {zh ? '安装版（EXE）' : 'Installer (EXE)'}
+        </a>
+        <a class="action-primary action-portable" href={latestReleaseUrl} data-release-package="portable.7z">
+          {zh ? '便携版（7z）' : 'Portable (7z)'}
+        </a>
+        <a class="action-text" href="#features">
+          {zh ? '探索功能' : 'Explore the details'}<span aria-hidden="true">↗</span>
+        </a>
       </div>
-      <p class="platform-note">
-        {
-          identity.released
-            ? `v${identity.version} · Windows 10 / 11 · x64`
-            : zh
-              ? 'Windows · 独立公开版本准备中'
-              : 'Windows · Standalone public release pending'
-        }
-      </p>
+      <p class="platform-note">Windows 10 / 11 · x64</p>
+      <p class="platform-note product-release-links"><a href={l('/changelog')}>v8.2.0 · {zh ? '更新日志' : 'Changelog'}</a></p>
+      <QqGroup />
     </div>
     <ProductPreview lang={lang} />
   </div>
@@ -280,4 +278,53 @@ const l = (p: string) => localizedPagePath(lang, p);
   }
   initPlayground();
   document.addEventListener('astro:page-load', initPlayground);
+</script>
+
+<style>
+  .product-actions {
+    flex-wrap: wrap;
+  }
+  .action-portable {
+    background: transparent;
+    color: #174b83;
+    box-shadow: inset 0 0 0 1px #c9def8;
+  }
+  .action-portable:hover {
+    background: #edf5ff;
+    color: #174b83;
+  }
+  .product-release-links a {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+</style>
+
+<script>
+  const downloads = document.querySelector<HTMLElement>('[data-release-api]');
+  if (downloads) {
+    const { releaseApi, releaseRepo, releaseProduct } = downloads.dataset;
+    const buttons = downloads.querySelectorAll<HTMLAnchorElement>('[data-release-package]');
+    if (releaseApi) {
+      fetch(releaseApi, { signal: AbortSignal.timeout(5000) })
+        .then((response) => {
+          if (!response.ok) throw new Error(`GitHub status ${response.status}`);
+          return response.json();
+        })
+        .then((release) => {
+          const tag = release.tag_name;
+          if (typeof tag !== 'string' || !/^v?\d+\.\d+\.\d+$/i.test(tag) || !Array.isArray(release.assets)) return;
+          const version = tag.replace(/^v/i, '');
+          for (const button of buttons) {
+            const name = `${releaseProduct}-${version}-windows-x64-${button.dataset.releasePackage}`;
+            const url = `${releaseRepo}/releases/download/${tag}/${name}`;
+            if (release.assets.some((asset) => asset.name === name && asset.browser_download_url === url)) {
+              button.href = url;
+            }
+          }
+        })
+        .catch(() => {
+          // Keep the latest release page available if GitHub cannot be reached.
+        });
+    }
+  }
 </script>
