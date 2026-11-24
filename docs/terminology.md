@@ -1,7 +1,7 @@
 # WindowSift: verified terms and claims
 
 Audit: 2026-11-18 (Asia/Shanghai).
-Sources: subprojects/window-inspector/src/InspectorWindow.cpp, WindowTreeWidget.cpp, main.cpp. Local source was read at D:/project/research/SnipX; supplied binaries were also inspected for matching embedded UI strings. Source review does not establish runtime verification.
+Sources: subprojects/window-inspector/src/InspectorWindow.cpp, WindowTreeWidget.cpp, main.cpp. Local source was read in the original application repository; supplied binaries were also inspected for matching embedded UI strings. Source review does not establish runtime verification.
 
 No verified current screenshot is available. The browser demo MUST say illustrative example. Current inspector strings are Chinese.
 

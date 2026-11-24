@@ -1,4 +1,5 @@
 ---
+import LatestReleaseLinks from './LatestReleaseLinks.astro';
 import QqGroup from './QqGroup.astro';
 import ProductPreview from './ProductPreview.astro';
 import WorksWellWith from './v3/WorksWellWith.astro';
@@ -18,15 +19,12 @@ const latestReleaseApi = identity.repo.replace('github.com/', 'api.github.com/re
 
 <section class="product-hero">
   <div class="v3-wrap hero-grid">
-    <div class="hero-copy">
+    <div class="hero-copy" data-release-api={latestReleaseApi} data-release-repo={identity.repo} data-release-product={identity.name}>
       <p class="product-kicker"><span></span>{c.kicker}</p>
       <h1>{c.title[0]}<em>{c.title[1]}</em></h1>
       <p class="product-summary">{c.summary}</p>
       <div
         class="product-actions"
-        data-release-api={latestReleaseApi}
-        data-release-repo={identity.repo}
-        data-release-product={identity.name}
       >
         <a class="action-primary" href={latestReleaseUrl} data-release-package="setup.exe">
           {zh ? '安装版（EXE）' : 'Installer (EXE)'}
@@ -34,13 +32,15 @@ const latestReleaseApi = identity.repo.replace('github.com/', 'api.github.com/re
         <a class="action-primary action-portable" href={latestReleaseUrl} data-release-package="portable.7z">
           {zh ? '便携版（7z）' : 'Portable (7z)'}
         </a>
-        <a class="action-text" href="#features">
-          {zh ? '探索功能' : 'Explore the details'}<span aria-hidden="true">↗</span>
-        </a>
       </div>
-      <p class="platform-note">Windows 10 / 11 · x64</p>
-      <p class="platform-note product-release-links"><a href={l('/changelog')}>v8.2.0 · {zh ? '更新日志' : 'Changelog'}</a></p>
-      <QqGroup />
+      <p class="hero-release-meta">
+        <span data-release-version></span>
+        <span>Windows 10 / 11 · x64</span>
+      </p>
+      <div class="hero-release-links">
+        <a href={l('/changelog')}>{zh ? '更新日志' : 'Changelog'}</a>
+        <QqGroup />
+      </div>
     </div>
     <ProductPreview lang={lang} />
   </div>
@@ -293,38 +293,37 @@ const latestReleaseApi = identity.repo.replace('github.com/', 'api.github.com/re
     background: #edf5ff;
     color: #174b83;
   }
-  .product-release-links a {
+</style>
+
+<LatestReleaseLinks />
+
+
+<style>
+  .hero-release-meta,
+  .hero-release-links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 14px;
+  }
+  .hero-release-meta {
+    margin-top: 12px;
+    color: #526479;
+    font-size: 13px;
+  }
+  .hero-release-meta [data-release-version]:empty {
+    display: none;
+  }
+  .hero-release-meta [data-release-version] {
+    font-weight: 650;
+  }
+  .hero-release-links {
+    margin-top: 8px;
+  }
+  .hero-release-links > a {
+    color: #34485e;
+    font-size: 14px;
     text-decoration: underline;
     text-underline-offset: 3px;
   }
 </style>
-
-<script>
-  const downloads = document.querySelector<HTMLElement>('[data-release-api]');
-  if (downloads) {
-    const { releaseApi, releaseRepo, releaseProduct } = downloads.dataset;
-    const buttons = downloads.querySelectorAll<HTMLAnchorElement>('[data-release-package]');
-    if (releaseApi) {
-      fetch(releaseApi, { signal: AbortSignal.timeout(5000) })
-        .then((response) => {
-          if (!response.ok) throw new Error(`GitHub status ${response.status}`);
-          return response.json();
-        })
-        .then((release) => {
-          const tag = release.tag_name;
-          if (typeof tag !== 'string' || !/^v?\d+\.\d+\.\d+$/i.test(tag) || !Array.isArray(release.assets)) return;
-          const version = tag.replace(/^v/i, '');
-          for (const button of buttons) {
-            const name = `${releaseProduct}-${version}-windows-x64-${button.dataset.releasePackage}`;
-            const url = `${releaseRepo}/releases/download/${tag}/${name}`;
-            if (release.assets.some((asset) => asset.name === name && asset.browser_download_url === url)) {
-              button.href = url;
-            }
-          }
-        })
-        .catch(() => {
-          // Keep the latest release page available if GitHub cannot be reached.
-        });
-    }
-  }
-</script>
